@@ -1,0 +1,1 @@
+export const API_URL = 'https://spendwise-production-0154.up.railway.app'; 

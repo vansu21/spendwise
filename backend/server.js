@@ -13,6 +13,7 @@ app.use(express.json());
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/expenses', require('./routes/expenseRoutes'));
 app.use('/api/budgets', require('./routes/budgetRoutes'));
+app.use('/api/ai', require('./routes/aiRoutes'));
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });

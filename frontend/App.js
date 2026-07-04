@@ -3,6 +3,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar } from 'expo-status-bar';
 import { AuthProvider } from './src/context/AuthContext';
+import ChatScreen from './src/screens/main/ChatScreen';
+
 
 // Auth Screens
 import LoginScreen from './src/screens/auth/LoginScreen';
@@ -24,6 +26,7 @@ function MainTabs() {
       <Tab.Screen name="Expenses" component={ExpensesScreen} />
       <Tab.Screen name="Budget" component={BudgetScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="Chat" component={ChatScreen} />
     </Tab.Navigator>
   );
 }

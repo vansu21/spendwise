@@ -15,6 +15,20 @@ export default function ExpensesScreen() {
   const [category, setCategory] = useState('Food');
   const [type, setType] = useState('expense');
 
+  const autoCategorize = async (titleText) => {
+    if (titleText.length < 3) return;
+    try {
+      const token = await SecureStore.getItemAsync('token');
+      const res = await axios.post(`${API_URL}/api/ai/categorize`,
+        { title: titleText, amount: amount || 0 },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setCategory(res.data.category);
+    } catch (err) {
+      console.log('Categorize error:', err.message); 
+    }
+  };
+
   useEffect(() => {
     fetchExpenses();
   }, []);
@@ -112,7 +126,15 @@ export default function ExpensesScreen() {
               </TouchableOpacity>
             </View>
 
-            <TextInput style={styles.input} placeholder="Title" value={title} onChangeText={setTitle} />
+            <TextInput 
+              style={styles.input} 
+              placeholder="Title" 
+              value={title} 
+              onChangeText={(text) => {
+                setTitle(text);
+                autoCategorize(text);
+              }} 
+            />
             <TextInput style={styles.input} placeholder="Amount" value={amount} onChangeText={setAmount} keyboardType="numeric" />
 
             <Text style={styles.label}>Category</Text>

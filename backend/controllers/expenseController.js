@@ -56,38 +56,31 @@ exports.deleteExpense = async (req, res) => {
 exports.getSummary = async (req, res) => {
   try {
     const { month } = req.query;
-    const currentMonth = month || new Date().toISOString().slice(0, 7);
-    const cacheKey = `summary:${req.user.id}:${currentMonth}`;
-
-    
-    const cached = await redis.get(cacheKey);
-    if (cached) {
-      console.log('Serving from cache');
-      return res.json(JSON.parse(cached));
-    }
-
-    const [year, mon] = currentMonth.split('-');
-    const start = new Date(year, mon - 1, 1);
-    const end = new Date(year, mon, 0, 23, 59, 59);
     const userId = new mongoose.Types.ObjectId(req.user.id);
 
+    let matchQuery = { userId };
+
+    // Only filter by month if month is provided
+    if (month) {
+      const [year, mon] = month.split('-');
+      const start = new Date(year, mon - 1, 1);
+      const end = new Date(year, mon, 0, 23, 59, 59);
+      matchQuery.date = { $gte: start, $lte: end };
+    }
+
     const byCategory = await Expense.aggregate([
-      { $match: { userId, date: { $gte: start, $lte: end } } },
+      { $match: matchQuery },
       { $group: { _id: { category: '$category', type: '$type' }, total: { $sum: '$amount' } } },
     ]);
 
     const totals = await Expense.aggregate([
-      { $match: { userId, date: { $gte: start, $lte: end } } },
+      { $match: matchQuery },
       { $group: { _id: '$type', total: { $sum: '$amount' } } },
     ]);
 
-    const result = { byCategory, totals };
-
-    
-    await redis.setex(cacheKey, 3600, JSON.stringify(result));
-
-    res.json(result);
+    res.json({ byCategory, totals });
   } catch (err) {
+    console.log('Summary error:', err.message);
     res.status(500).json({ msg: err.message });
   }
 };

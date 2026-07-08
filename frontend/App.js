@@ -15,18 +15,35 @@ import DashboardScreen from './src/screens/main/DashboardScreen';
 import ExpensesScreen from './src/screens/main/ExpensesScreen';
 import BudgetScreen from './src/screens/main/BudgetScreen';
 import ProfileScreen from './src/screens/main/ProfileScreen';
+import { Text } from 'react-native';
+
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function MainTabs() {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ color, size }) => {
+          const icons = {
+            Dashboard: '🏠',
+            Expenses: '💸',
+            Budget: '🎯',
+            Chat: '🤖',
+            Profile: '👤',
+          };
+          return <Text style={{ fontSize: size }}>{icons[route.name]}</Text>;
+        },
+        tabBarActiveTintColor: '#1e6ef4',
+        tabBarInactiveTintColor: 'gray',
+      })}
+    >
       <Tab.Screen name="Dashboard" component={DashboardScreen} />
       <Tab.Screen name="Expenses" component={ExpensesScreen} />
       <Tab.Screen name="Budget" component={BudgetScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
       <Tab.Screen name="Chat" component={ChatScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
 }
@@ -46,3 +63,4 @@ export default function App() {
     </AuthProvider>
   );
 }
+

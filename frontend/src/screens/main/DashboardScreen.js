@@ -9,15 +9,23 @@ export default function DashboardScreen({ navigation }) {
   const { user } = useAuth();
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('month'); // 'month' or 'all'
 
   useEffect(() => {
     fetchSummary();
-  }, []);
+  }, [filter]);
 
   const fetchSummary = async () => {
     try {
       const token = await SecureStore.getItemAsync('token');
-      const res = await axios.get(`${API_URL}/api/expenses/summary`, {
+      let url = `${API_URL}/api/expenses/summary`;
+      
+      if (filter === 'month') {
+        const month = new Date().toISOString().slice(0, 7);
+        url += `?month=${month}`;
+      }
+
+      const res = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSummary(res.data);
@@ -35,7 +43,20 @@ export default function DashboardScreen({ navigation }) {
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.greeting}>👋 Hello, {user?.name || 'User'}!</Text>
-      <Text style={styles.month}>May 2026</Text>
+
+      {/* Filter Toggle */}
+      <View style={styles.filterRow}>
+        <TouchableOpacity
+          style={[styles.filterBtn, filter === 'month' && styles.filterBtnActive]}
+          onPress={() => setFilter('month')}>
+          <Text style={[styles.filterText, filter === 'month' && styles.filterTextActive]}>This Month</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.filterBtn, filter === 'all' && styles.filterBtnActive]}
+          onPress={() => setFilter('all')}>
+          <Text style={[styles.filterText, filter === 'all' && styles.filterTextActive]}>All Time</Text>
+        </TouchableOpacity>
+      </View>
 
       {/* Balance Card */}
       <View style={styles.balanceCard}>
@@ -69,7 +90,7 @@ export default function DashboardScreen({ navigation }) {
       {/* Category Breakdown */}
       {summary?.byCategory?.length > 0 && (
         <>
-          <Text style={styles.sectionTitle}>This Month</Text>
+          <Text style={styles.sectionTitle}>Breakdown</Text>
           {summary.byCategory.map((item, index) => (
             <View key={index} style={styles.categoryRow}>
               <Text style={styles.categoryName}>{item._id.category}</Text>
@@ -86,7 +107,11 @@ export default function DashboardScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f5f5f5', padding: 20 },
   greeting: { fontSize: 24, fontWeight: 'bold', marginTop: 20 },
-  month: { fontSize: 14, color: '#888', marginBottom: 20 },
+  filterRow: { flexDirection: 'row', backgroundColor: '#e0e0e0', borderRadius: 10, padding: 4, marginVertical: 16 },
+  filterBtn: { flex: 1, padding: 8, borderRadius: 8, alignItems: 'center' },
+  filterBtnActive: { backgroundColor: '#fff', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 4, elevation: 2 },
+  filterText: { fontSize: 14, color: '#888', fontWeight: '600' },
+  filterTextActive: { color: '#1e6ef4' },
   balanceCard: { backgroundColor: '#1e6ef4', borderRadius: 16, padding: 20, marginBottom: 24 },
   balanceLabel: { color: 'rgba(255,255,255,0.8)', fontSize: 14 },
   balanceAmount: { color: '#fff', fontSize: 36, fontWeight: 'bold', marginVertical: 8 },

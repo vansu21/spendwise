@@ -1,3 +1,37 @@
 
 backend/node_modules/
+backend/.env# ===== BACKEND =====
+backend/node_modules/
 backend/.env
+backend/*.log
+
+# ===== FRONTEND =====
+frontend/node_modules/
+frontend/.expo/
+frontend/dist/
+frontend/.env
+frontend/*.log
+
+# ===== ROOT =====
+node_modules/
+.env
+*.log
+
+# ===== OS FILES =====
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===== VS CODE =====
+.vscode/
+*.vsix
+
+# ===== BUILD FILES =====
+build/
+dist/
+*.apk
+*.aab
+*.ipa
+
+# ===== EXPO =====
+frontend/.expo-shared/

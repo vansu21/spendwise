@@ -9,7 +9,7 @@ export default function DashboardScreen({ navigation }) {
   const { user } = useAuth();
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('month'); // 'month' or 'all'
+  const [filter, setFilter] = useState('month');
 
   useEffect(() => {
     fetchSummary();
@@ -17,17 +17,21 @@ export default function DashboardScreen({ navigation }) {
 
   const fetchSummary = async () => {
     try {
+      setLoading(true);
       const token = await SecureStore.getItemAsync('token');
+      console.log('Token:', token ? 'exists' : 'NULL');
+
       let url = `${API_URL}/api/expenses/summary`;
-      
       if (filter === 'month') {
         const month = new Date().toISOString().slice(0, 7);
         url += `?month=${month}`;
       }
+      console.log('URL:', url);
 
       const res = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      console.log('Totals:', JSON.stringify(res.data.totals));
       setSummary(res.data);
     } catch (err) {
       console.log('Summary error:', err.message);
@@ -60,7 +64,9 @@ export default function DashboardScreen({ navigation }) {
 
       {/* Balance Card */}
       <View style={styles.balanceCard}>
-        <Text style={styles.balanceLabel}>Total Balance</Text>
+        <Text style={styles.balanceLabel}>
+          {filter === 'month' ? 'This Month Balance' : 'All Time Balance'}
+        </Text>
         <Text style={styles.balanceAmount}>₹{balance.toLocaleString()}</Text>
         <View style={styles.row}>
           <View style={styles.incomeBox}>
@@ -88,7 +94,7 @@ export default function DashboardScreen({ navigation }) {
       </View>
 
       {/* Category Breakdown */}
-      {summary?.byCategory?.length > 0 && (
+      {summary?.byCategory?.length > 0 ? (
         <>
           <Text style={styles.sectionTitle}>Breakdown</Text>
           {summary.byCategory.map((item, index) => (
@@ -99,6 +105,8 @@ export default function DashboardScreen({ navigation }) {
             </View>
           ))}
         </>
+      ) : (
+        <Text style={styles.empty}>No data for this period</Text>
       )}
     </ScrollView>
   );
@@ -121,7 +129,7 @@ const styles = StyleSheet.create({
   boxLabel: { color: 'rgba(255,255,255,0.8)', fontSize: 12 },
   incomeAmount: { color: '#4ade80', fontSize: 18, fontWeight: 'bold' },
   expenseAmount: { color: '#f87171', fontSize: 18, fontWeight: 'bold' },
-  sectionTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 12 },
+  sectionTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 12, marginTop: 8 },
   actionBtn: { backgroundColor: '#fff', borderRadius: 12, padding: 16, flex: 0.48, alignItems: 'center' },
   actionIcon: { fontSize: 28, marginBottom: 8 },
   actionText: { fontSize: 13, fontWeight: '600', color: '#333' },
@@ -129,4 +137,5 @@ const styles = StyleSheet.create({
   categoryName: { fontSize: 14, fontWeight: '600', flex: 1 },
   categoryType: { fontSize: 12, color: '#888', marginRight: 8 },
   categoryAmount: { fontSize: 14, fontWeight: 'bold', color: '#1e6ef4' },
+  empty: { textAlign: 'center', marginTop: 20, color: '#888', fontSize: 14 },
 });

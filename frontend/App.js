@@ -4,6 +4,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar } from 'expo-status-bar';
 import { AuthProvider } from './src/context/AuthContext';
 import ChatScreen from './src/screens/main/ChatScreen';
+import ChartsScreen from './src/screens/main/ChartsScreen';
+
 
 
 // Auth Screens
@@ -28,6 +30,7 @@ function MainTabs() {
         tabBarIcon: ({ color, size }) => {
           const icons = {
             Dashboard: '🏠',
+            Charts: '📊',
             Expenses: '💸',
             Budget: '🎯',
             Chat: '🤖',
@@ -40,6 +43,7 @@ function MainTabs() {
       })}
     >
       <Tab.Screen name="Dashboard" component={DashboardScreen} />
+      <Tab.Screen name="Charts" component={ChartsScreen} />
       <Tab.Screen name="Expenses" component={ExpensesScreen} />
       <Tab.Screen name="Budget" component={BudgetScreen} />
       <Tab.Screen name="Chat" component={ChatScreen} />

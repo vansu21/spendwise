@@ -4,6 +4,7 @@ import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import { API_URL } from '../../constants/api';
 
+
 const CATEGORIES = ['Food', 'Transport', 'Shopping', 'Health', 'Entertainment', 'Education', 'Bills', 'Other'];
 
 export default function BudgetScreen() {
@@ -12,6 +13,7 @@ export default function BudgetScreen() {
   const [category, setCategory] = useState('Food');
   const [limit, setLimit] = useState('');
   const month = new Date().toISOString().slice(0, 7);
+  
 
   useEffect(() => {
     fetchBudgets();
@@ -56,6 +58,8 @@ export default function BudgetScreen() {
       Alert.alert('Error', 'Failed to delete');
     }
   };
+
+
 
   return (
     <View style={styles.container}>

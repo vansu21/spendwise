@@ -11,7 +11,7 @@ exports.categorize = async (req, res) => {
   try {
     const { title, amount } = req.body;
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
 
     const prompt = `You are an expense categorizer. Given this expense, return ONLY one category from this list: ${CATEGORIES.join(', ')}. 
     Expense: "${title}" for amount ${amount}.
@@ -46,7 +46,7 @@ exports.chat = async (req, res) => {
     ).join('\n');
 
     const model = genAI.getGenerativeModel({
-      model: 'gemini-1.5-flash',
+      model: 'gemini-3.5-flash',
       systemInstruction: `You are a personal finance assistant for SpendWise app. Here are the user's recent expenses:\n${expenseSummary}`,
     });
 

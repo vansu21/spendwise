@@ -14,7 +14,7 @@ SpendWise is a full-stack mobile expense tracking app with AI features. Track yo
 - 💸 **Expense Tracking** — Add, view, and delete income/expenses
 - 🎯 **Budget Management** — Set monthly budgets by category
 - 📊 **Analytics** — 7-day trend line chart and spending pie chart
-- 🤖 **AI Chatbot** — Ask questions about your spending (powered by Groq)
+- 🤖 **AI Chatbot** — Ask questions about your spending (powered by Gemini)
 - 🏠 **Dashboard** — Balance overview with This Month / All Time toggle
 - 👤 **Profile** — View account info and logout
 
